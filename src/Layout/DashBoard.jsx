@@ -23,7 +23,7 @@ const DashBoard = () => {
       {/* dashboard side bar */}
       <div className="w-64 min-h-screen bg-orange-400">
         <ul className="menu p-4">
-          { isAdmin ? (
+          { isAdmin ? 
             <>
               <li>
                 <NavLink to="/dashboard/adminHome">
@@ -56,7 +56,7 @@ const DashBoard = () => {
                 </NavLink>
               </li>
             </>
-          ) : (
+           : 
             <>
             <li>
                 <NavLink to="/dashboard/adminHome">
@@ -71,7 +71,7 @@ const DashBoard = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/dashboard/manageItems">
+                <NavLink to="/dashboard/manageItem">
                   <FaList></FaList>
                   Manage Items
                 </NavLink>
@@ -88,8 +88,14 @@ const DashBoard = () => {
                   All Users
                 </NavLink>
               </li>
+              <li>
+                <NavLink to="/dashboard/paymentsHistory">
+                  <FaList></FaList>
+                  Payment Real History
+                </NavLink>
+              </li>
             </>
-          )}
+          }
           {/* shared nav links */}
           <div className="divider">OR</div>
           <li>

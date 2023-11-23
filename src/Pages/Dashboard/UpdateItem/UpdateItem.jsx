@@ -1,19 +1,20 @@
-import React from "react";
-import SectionTitle from "../../../../components/SectionTitle/SectionTitle";
-import { useForm } from "react-hook-form";
-import { FaUtensils } from "react-icons/fa";
-import useAxiosPublic from "../../../../hooks/useAxiosPublic";
-import useAxiosSecure from "../../../../hooks/useAxiosSecure";
-import Swal from "sweetalert2";
+import React from 'react'
+import SectionTitle from '../../../components/SectionTitle/SectionTitle'
+import { useLoaderData } from 'react-router-dom'
+import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import useAxiosPublic from '../../../hooks/useAxiosPublic';
 
 const image_hosting_key = "ff73e1fde90e68b0dc7ceaf1d0027119";
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
-const AddItems = () => {
-  const { register, handleSubmit, reset } = useForm();
-
-  const axiosPublic = useAxiosPublic();
-  const axiosSecure = useAxiosSecure();
+const UpdateItem = () => {
+    const {name, category, recipe, price, _id} = useLoaderData();
+    console.log(name, category, recipe, price)
+    const { register, handleSubmit, reset } = useForm();
+    const axiosSecure = useAxiosSecure();
+    const axiosPublic = useAxiosPublic();
   const onSubmit = async(data) => {
     console.log(data);
     // image upload to imgbb and the get an url
@@ -33,30 +34,25 @@ const AddItems = () => {
         image: res.data.data.display_url
       }
       // 
-      const menuRes = await axiosSecure.post('/menu', menuItem);
+      const menuRes = await axiosSecure.patch(`/menu/${_id}`, menuItem);
       console.log(menuRes.data)
       console.log('with image url',res.data)
-      if(menuRes.data.insertedId){
+      if(menuRes.data.modifiedCount > 0){
         // show syccess popup
-        reset();
+        // reset();
         Swal.fire({
           position: "top-end",
           icon: "success",
-          title: `${data.name} is added to the menu`,
+          title: `${data.name} is updated to the menu`,
           showConfirmButton: false,
           timer: 1500
         });
-
-    }
-    }
-    
+    }}
   };
   return (
     <div>
-      <SectionTitle
-        heading={"ADD AN ITEM"}
-        subHeading={"---What's new?---"}
-      ></SectionTitle>
+        <SectionTitle heading={'Update Item'} subHeading={'Refresh Info'}></SectionTitle>
+        <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-control w-full my-6">
           <label className="label">
@@ -65,6 +61,7 @@ const AddItems = () => {
           <input
             type="text"
             placeholder="Recipe Name"
+            defaultValue={name}
             {...register("name", {required: true})}
             className="input input-bordered w-full"
           />
@@ -77,7 +74,7 @@ const AddItems = () => {
               <span className="label-text">Category*</span>
             </label>
             <select
-              defaultValue={"default"}
+              defaultValue={category}
               {...register("category", {required: true})}
               className="select select-bordered w-full"
             >
@@ -99,6 +96,7 @@ const AddItems = () => {
             <input
               type="number"
               placeholder="Price"
+              defaultValue={price}
               {...register("price", {required: true})}
               className="input input-bordered w-full"
             />
@@ -113,6 +111,7 @@ const AddItems = () => {
             <textarea
               className="textarea textarea-bordered h-24"
               placeholder="Recipe"
+              defaultValue={recipe}
               {...register('recipe', {required: true})}
             ></textarea>
             
@@ -120,10 +119,11 @@ const AddItems = () => {
           <div className="form-control w-full my-6">
           <input {...register('image', {required: true})} type="file" className="file-input w-full max-w-xs" />
           </div>
-        <button className="btn bg-orange-500 text-white">Add Items <FaUtensils></FaUtensils></button>
+        <button className="btn bg-orange-500 text-white">Update Menu Item</button>
       </form>
     </div>
-  );
-};
+    </div>
+  )
+}
 
-export default AddItems;
+export default UpdateItem
